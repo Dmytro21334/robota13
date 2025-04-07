@@ -1,0 +1,64 @@
+import java.sql.*;
+
+public class AlbumCRUD {
+    public static void addAlbum(String title, String artist, String genre, double price) {
+        String query = "INSERT INTO albums (title, artist, genre, price) VALUES (?, ?, ?, ?)";
+        try (Connection connection = DBUtil.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, title);
+            statement.setString(2, artist);
+            statement.setString(3, genre);
+            statement.setDouble(4, price);
+            statement.executeUpdate();
+            System.out.println("Album added successfully!");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void getAllAlbums() {
+        String query = "SELECT * FROM albums";
+        try (Connection connection = DBUtil.getConnection();
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(query)) {
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String title = resultSet.getString("title");
+                String artist = resultSet.getString("artist");
+                String genre = resultSet.getString("genre");
+                double price = resultSet.getDouble("price");
+                System.out.println(id + ": " + title + " by " + artist + " (" + genre + ") - $" + price);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void updateAlbum(int id, String title, String artist, String genre, double price) {
+        String query = "UPDATE albums SET title = ?, artist = ?, genre = ?, price = ? WHERE id = ?";
+        try (Connection connection = DBUtil.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, title);
+            statement.setString(2, artist);
+            statement.setString(3, genre);
+            statement.setDouble(4, price);
+            statement.setInt(5, id);
+            statement.executeUpdate();
+            System.out.println("Album updated successfully!");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void deleteAlbum(int id) {
+        String query = "DELETE FROM albums WHERE id = ?";
+        try (Connection connection = DBUtil.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, id);
+            statement.executeUpdate();
+            System.out.println("Album deleted successfully!");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+}
