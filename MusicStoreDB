@@ -1,0 +1,79 @@
+import java.sql.*;
+
+public class MusicStoreDB {
+    private static final String URL = "jdbc:h2:mem:musicdb;DB_CLOSE_DELAY=-1";
+    private static final String USER = "sa";
+    private static final String PASS = "";
+
+    public static void main(String[] args) {
+        try (Connection conn = DriverManager.getConnection(URL, USER, PASS);
+             Statement stmt = conn.createStatement()) {
+
+            stmt.execute("CREATE TABLE albums (" +
+                    "id INT PRIMARY KEY AUTO_INCREMENT," +
+                    "title VARCHAR(255)," +
+                    "artist VARCHAR(255)," +
+                    "genre VARCHAR(100)," +
+                    "price DOUBLE)");
+
+            stmt.execute("CREATE TABLE customers (" +
+                    "id INT PRIMARY KEY AUTO_INCREMENT," +
+                    "name VARCHAR(255)," +
+                    "phone VARCHAR(50)," +
+                    "email VARCHAR(255))");
+
+            stmt.execute("INSERT INTO albums (title, artist, genre, price) VALUES " +
+                    "('Thriller', 'Michael Jackson', 'Pop', 19.99)," +
+                    "('Back in Black', 'AC/DC', 'Rock', 17.99)");
+
+            stmt.execute("INSERT INTO customers (name, phone, email) VALUES " +
+                    "('Олег', '380501234567', 'oleg@example.com')," +
+                    "('Марина', '380631234567', 'marina@example.com')");
+
+            ResultSet rsAlbums = stmt.executeQuery("SELECT * FROM albums");
+            System.out.println("🎵 Albums:");
+            while (rsAlbums.next()) {
+                System.out.println(rsAlbums.getInt("id") + ": " +
+                        rsAlbums.getString("title") + " - " +
+                        rsAlbums.getString("artist") + " (" +
+                        rsAlbums.getString("genre") + ") - $" +
+                        rsAlbums.getDouble("price"));
+            }
+
+            ResultSet rsCustomers = stmt.executeQuery("SELECT * FROM customers");
+            System.out.println("\n👥 Customers:");
+            while (rsCustomers.next()) {
+                System.out.println(rsCustomers.getInt("id") + ": " +
+                        rsCustomers.getString("name") + ", " +
+                        rsCustomers.getString("phone") + ", " +
+                        rsCustomers.getString("email"));
+            }
+
+            stmt.execute("UPDATE albums SET price = 15.99 WHERE title = 'Thriller'");
+            stmt.execute("UPDATE customers SET phone = '380991234567' WHERE name = 'Олег'");
+
+            stmt.execute("DELETE FROM albums WHERE title = 'Back in Black'");
+            stmt.execute("DELETE FROM customers WHERE name = 'Марина'");
+
+            System.out.println("\n📀 Albums після змін:");
+            rsAlbums = stmt.executeQuery("SELECT * FROM albums");
+            while (rsAlbums.next()) {
+                System.out.println(rsAlbums.getInt("id") + ": " +
+                        rsAlbums.getString("title") + " - " +
+                        rsAlbums.getString("artist") + " - $" +
+                        rsAlbums.getDouble("price"));
+            }
+
+            System.out.println("\n📇 Customers після змін:");
+            rsCustomers = stmt.executeQuery("SELECT * FROM customers");
+            while (rsCustomers.next()) {
+                System.out.println(rsCustomers.getInt("id") + ": " +
+                        rsCustomers.getString("name") + ", " +
+                        rsCustomers.getString("phone"));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+}
