@@ -41,7 +41,7 @@ public class MusicStoreDB {
             }
 
             ResultSet rsCustomers = stmt.executeQuery("SELECT * FROM customers");
-            System.out.println("\n👥 Customers:");
+            System.out.println("\n Customers:");
             while (rsCustomers.next()) {
                 System.out.println(rsCustomers.getInt("id") + ": " +
                         rsCustomers.getString("name") + ", " +
@@ -55,7 +55,7 @@ public class MusicStoreDB {
             stmt.execute("DELETE FROM albums WHERE title = 'Back in Black'");
             stmt.execute("DELETE FROM customers WHERE name = 'Марина'");
 
-            System.out.println("\n📀 Albums після змін:");
+            System.out.println("\n Albums після змін:");
             rsAlbums = stmt.executeQuery("SELECT * FROM albums");
             while (rsAlbums.next()) {
                 System.out.println(rsAlbums.getInt("id") + ": " +
@@ -64,7 +64,7 @@ public class MusicStoreDB {
                         rsAlbums.getDouble("price"));
             }
 
-            System.out.println("\n📇 Customers після змін:");
+            System.out.println("\n Customers після змін:");
             rsCustomers = stmt.executeQuery("SELECT * FROM customers");
             while (rsCustomers.next()) {
                 System.out.println(rsCustomers.getInt("id") + ": " +
